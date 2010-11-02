@@ -5,7 +5,7 @@ include "functions.inc.php";
 header('Content-Type: text/plain; charset=utf-8');
 
 if (isset($_GET['country']) && strlen(trim($_GET['country'])) === 2)
-    $country = mysql_real_escape_string(trim($_GET['country']));
+    $country = mysql_real_escape_string(trim(strtoupper($_GET['country'])));
 else
     die("Invalid country");
 
