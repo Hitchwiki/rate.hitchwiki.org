@@ -1,10 +1,10 @@
 
 ratings
-*   id
-*   country
+*   id (auto_increment)
+*   country (iso)
 *   timestamp
-*   value (1-5)
-*   user (-1 for unknow)
+*   value (1-5, NOT NULL)
+*   user (NULL for unknow)
 *   ip
 
 
