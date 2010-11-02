@@ -3,11 +3,16 @@
 
 Rating system for Hitchwiki.org - to use with different projects trough widgets and API.
 
-Notes 7.8.2010 by simison and MrTweek
+
+# Log
+* First version of notes 7.8.2010
+* Updated drafts 2.10.2010
 
 
 ## Overall
 * 1-5 rating
+* only 1 vote per ip/week/country or so
+* See [db-draft](http://github.com/Hitchwiki/rate.hitchwiki.org/blob/master/db-draft)
 
 
 ## Widget
@@ -35,39 +40,4 @@ Notes 7.8.2010 by simison and MrTweek
 * Rating URL: ./?rate=5&country=de
 	* Would add 5 to the db for Germany
 
-./api/json/ (all)
-{"world": [
-    {
-        "iso": "DE",
-        "name": "Germany",
-        "continent": "Europe",
-        "rating": 5
-    },
-    {
-        "iso": "FI",
-        "name": "Finland",
-        "continent": "Europe",
-        "rating": 5
-    },
-   etc...
-]}
-
-./api/json/?country=de
-{
-        "iso": "DE",
-        "name": "Germany",
-        "continent": "Europe",
-        "rating": 5
-}
-
-./api/json/?country=fi&lang=fi
-{
-        "iso": "FI",
-        "name": "Suomi",
-        "continent": "Eurooppa",
-        "rating": 5
-}
-
-## Database
-* timestamp, ip-address, country, rating
-* only 1 vote per ip/week/country or so
+See [json-draft](http://github.com/Hitchwiki/rate.hitchwiki.org/blob/master/json-draft) for more.
