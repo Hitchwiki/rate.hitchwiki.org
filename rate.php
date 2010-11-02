@@ -35,6 +35,9 @@ else
 
 mysql_query($query);
 
-echo json_encode(array('country' => $country, 'rating' => getRating($country)));
+echo json_encode(array(
+    'country' => $country, 
+    'rating' => getRating($country),
+));
 
 ?>
