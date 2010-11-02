@@ -1,0 +1,8 @@
+CREATE TABLE `hitchwiki_ratings`.`ratings` (
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+    `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    `country` VARCHAR( 2 ) NOT NULL DEFAULT 'XX',
+    `rating` SMALLINT NOT NULL DEFAULT '3',
+    `user` VARCHAR( 1024 ) NULL ,
+    `ip` VARCHAR( 1024 ) NOT NULL 
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_bin
