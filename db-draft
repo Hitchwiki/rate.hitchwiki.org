@@ -1,13 +1,10 @@
 
 ratings
 *   id
-*   city
 *   country
 *   timestamp
 *   value (1-5)
 *   user (-1 for unknow)
 *   ip
-*   comment
-*   comment_language
 
 
