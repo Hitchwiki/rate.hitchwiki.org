@@ -2,7 +2,7 @@
 
 $dbhost = '127.0.0.1';
 $dbuser = 'hitchwiki';
-$dbpasswd = 'sk4ib8xh6is2';
+$dbpasswd = '';
 $dbname = 'hitchwiki_ratings';
 
 $db = mysql_connect($dbhost, $dbuser, $dbpasswd);
