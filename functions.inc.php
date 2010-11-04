@@ -1,11 +1,10 @@
 <?php 
 
-$dbhost = '127.0.0.1';
-$dbuser = 'hitchwiki';
-$dbpasswd = '';
+
+$conf = readConfig('/etc/hitchwiki/hitchwiki.conf');
 $dbname = 'hitchwiki_ratings';
 
-$db = mysql_connect($dbhost, $dbuser, $dbpasswd);
+$db = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
 mysql_select_db($dbname);
 
 $languages = array(
@@ -16,6 +15,16 @@ $languages = array(
     'ru' => 'ru_RU',
     'lt' => 'lt_LT',
 );
+
+function readConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
+    $conf = array();
+    $f = file($path);
+    foreach ($f AS $l) {
+        list($key, $val) = explode('=', trim($l), 2);
+        $conf[$key] = $val;
+    }
+    return $conf;
+}
 
 /* Try to get Username from mediawiki */
 function getCurrentUser() {
