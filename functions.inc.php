@@ -1,7 +1,7 @@
 <?php 
 
 
-$conf = readConfig('/etc/hitchwiki/hitchwiki.conf');
+$conf = crReadConfig('/etc/hitchwiki/hitchwiki.conf');
 $dbname = 'hitchwiki_ratings';
 
 $db = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
@@ -16,7 +16,7 @@ $languages = array(
     'lt' => 'lt_LT',
 );
 
-function readConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
+function crReadConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
     $conf = array();
     $f = file($path);
     foreach ($f AS $l) {

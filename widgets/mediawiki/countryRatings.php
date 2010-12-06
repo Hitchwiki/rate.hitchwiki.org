@@ -1,5 +1,7 @@
 <?php
 
+include "functions.inc.php";
+
 $wgExtensionFunctions[] = "wfcountryrating";
 
 $wgExtensionCredits['parserhook'][] = array(
@@ -9,8 +11,7 @@ $wgExtensionCredits['parserhook'][] = array(
     'description' => 'Let users rate countries.'
 );
 
-
-function wftravelmap() {
+function wfcountryrating() {
     global $wgParser, $wgHooks;
     global $wgParser;
     $wgParser->disableCache();
@@ -36,17 +37,44 @@ function countryrating($input, $argv) {
     if (!isset($argv['country']) || strlen($argv['country']) != 2) {
         return "<div style='border: 1px solid red;'>Invalid country</div>";
     }
-    $country = $argv['country'];
+    $country = strtoupper(mysql_real_escape_string($argv['country']));
+    $rating = getRating($country);
 
 $output = "
-<div id='rating_$country' class='rating'>
+<span id='rating_$country' class='rating'>
     <script>
-    function reload_$country() {
-        
-    } 
+    function rateCountry(country, select) {
+        var value = select.options[select.options.selectedIndex].value;
+        document.getElementById(\"rateselect_\"+country).style.display = 'none';
+        var result = {}; 
+        var rating;
+        var count;
+        var http_request = new XMLHttpRequest();
+        http_request.open('GET', '/rate/rate.php?country='+country+'&rating='+value, true);
+        http_request.onreadystatechange = function () {
+            if (http_request.readyState == 4 && http_request.status == 200) {
+                result = JSON.parse(http_request.responseText);
+                rating = result['rating']['rating'];
+                count = result['rating']['count'];
+                document.getElementById('rating_'+country+'_value').innerHTML = rating;
+                document.getElementById('rating_'+country+'_count').innerHTML = count;
+            }
+        };
+        http_request.send(null);
+    }
     </script>
-    <span id='rating_$country"."_value'>?</span>/5 (<span id='rating_$country"."_count'></span> votes)<br />
-</div>
+    <span id='rating_$country"."_value'>".$rating['rating']."</span>/5 (<span id='rating_$country"."_count'>".$rating['count']."</span> votes). 
+    <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>Rate!</a>
+    <span id='rateselect_$country' style='display: none;'>
+        <select name='rate_$country' onChange='rateCountry(\"$country\", this)'>
+            <option value='5'>5 - Very good</option>
+            <option value='4'>4 - Good</option>
+            <option value='3'>3 - Average</option>
+            <option value='2'>2 - Bad</option>
+            <option value='1'>1 - Almost impossible</option>
+        </select>
+    </span>
+</span>
     ";
 
     return '<!-- ENCODED_CONTENT_RATING '.base64_encode($output).' -->';
