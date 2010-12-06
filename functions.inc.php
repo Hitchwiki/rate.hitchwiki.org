@@ -37,7 +37,7 @@ function getRating($country) {
     global $crdb;
     $query = "SELECT AVG(rating),COUNT(rating) FROM ratings WHERE country='$country' GROUP BY country";
     $r = mysql_fetch_row(mysql_query($query, $crdb));
-    return array('rating' => intval($r[0]), 'count' => intval($r[1]));
+    return array('rating' => round($r[0], 1), 'count' => intval($r[1]));
 }
 
 function getCountryName($country, $lang) {

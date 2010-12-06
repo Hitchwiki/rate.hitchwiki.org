@@ -35,7 +35,7 @@ function ratingJS(&$parser, &$text) {
 
 function countryrating($input, $argv) {
     if (!isset($argv['country']) || strlen($argv['country']) != 2) {
-        return "<div style='border: 1px solid red;'>Invalid country</div>";
+        return "<span tyle='border: 1px solid red;'>No country specified</span>";
     }
     $country = strtoupper(mysql_real_escape_string($argv['country']));
     $rating = getRating($country);
