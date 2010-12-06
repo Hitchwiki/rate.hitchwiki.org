@@ -45,6 +45,8 @@ $output = "
     <script>
     function rateCountry(country, select) {
         var value = select.options[select.options.selectedIndex].value;
+        if (value == 0)
+            return;
         document.getElementById(\"rateselect_\"+country).style.display = 'none';
         var result = {}; 
         var rating;
@@ -67,6 +69,7 @@ $output = "
     <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>Rate!</a>
     <span id='rateselect_$country' style='display: none;'>
         <select name='rate_$country' onChange='rateCountry(\"$country\", this)'>
+            <option value='0'>-- Please select --</option>
             <option value='5'>5 - Very good</option>
             <option value='4'>4 - Good</option>
             <option value='3'>3 - Average</option>

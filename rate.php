@@ -19,7 +19,7 @@ $ip = $_SERVER['REMOTE_ADDR'];
 if ($user)
     $query = "SELECT id FROM ratings WHERE user='$user' AND country='$country'";
 else
-    $query = "SELECT id FROM ratings WHERE ip='$ip' AND country='$country' AND timestamp > DATE_SUB(CURDATE(), INTERVAL 7 DAY)"; 
+    $query = "SELECT id FROM ratings WHERE ip='$ip' AND user IS NULL AND country='$country' AND timestamp > DATE_SUB(CURDATE(), INTERVAL 7 DAY)"; 
 
 $res = mysql_query($query);
 if (mysql_num_rows($res) > 0) {
