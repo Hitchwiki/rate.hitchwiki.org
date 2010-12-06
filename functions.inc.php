@@ -4,7 +4,7 @@
 $conf = crReadConfig('/etc/hitchwiki/hitchwiki.conf');
 $dbname = 'hitchwiki_ratings';
 
-$db = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
+$crdb = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
 mysql_select_db($dbname);
 
 $languages = array(
@@ -34,14 +34,16 @@ function getCurrentUser() {
 }
 
 function getRating($country) {
+    global $crdb;
     $query = "SELECT AVG(rating),COUNT(rating) FROM ratings WHERE country='$country' GROUP BY country";
-    $r = mysql_fetch_row(mysql_query($query));
+    $r = mysql_fetch_row(mysql_query($query, $crdb));
     return array('rating' => intval($r[0]), 'count' => intval($r[1]));
 }
 
 function getCountryName($country, $lang) {
+    global $crdb;
     $query = "SELECT $lang FROM geo_countries WHERE iso = '$country'";
-    $r = mysql_fetch_row(mysql_query($query));
+    $r = mysql_fetch_row(mysql_query($query, $crdb));
     return $r[0];
 
 }
