@@ -70,16 +70,16 @@ $output = "
     <img src='$imgpath/hitch".round($rating['rating']).".png' />
     <sup>[<a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
     <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px;'>
-        Current rating: 
+        "._("Current rating").": 
         <span id='rating_$country"."_value' style='font-weight: bold;'>".$rating['rating']."</span>/5
-        (<span id='rating_$country"."_count'>".$rating['count']."</span> votes). <br /><br />
-        <b>Your rating:</b><br />
-        <a onclick='rateCountry(\"$country\", 5);'><img src='$imgpath/hitch5.png' />Excellent</a><br />
-        <a onclick='rateCountry(\"$country\", 4);'><img src='$imgpath/hitch4.png' />Good</a><br />
-        <a onclick='rateCountry(\"$country\", 3);'><img src='$imgpath/hitch3.png' />Average</a><br />
-        <a onclick='rateCountry(\"$country\", 2);'><img src='$imgpath/hitch2.png' />Bad</a><br />
-        <a onclick='rateCountry(\"$country\", 1);'><img src='$imgpath/hitch1.png' />Almost impossible</a><br /><br />
-        <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"none\"' style='border: 1px solid blue; background-color: #EEE; padding: 2px;'>Cancel</a>
+        (<span id='rating_$country"."_count'>".$rating['count']."</span> "._('votes')."). <br /><br />
+        <b>"._("Your rating").":</b><br />
+        <a onclick='rateCountry(\"$country\", 5);'><img src='$imgpath/hitch5.png' />"._("Excellent")."</a><br />
+        <a onclick='rateCountry(\"$country\", 4);'><img src='$imgpath/hitch4.png' />"._("Good")."</a><br />
+        <a onclick='rateCountry(\"$country\", 3);'><img src='$imgpath/hitch3.png' />"._("Average")."</a><br />
+        <a onclick='rateCountry(\"$country\", 2);'><img src='$imgpath/hitch2.png' />"._("Bad")."</a><br />
+        <a onclick='rateCountry(\"$country\", 1);'><img src='$imgpath/hitch1.png' />"._("Almost impossible")."</a><br /><br />
+        <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"none\"' style='border: 1px solid blue; background-color: #EEE; padding: 2px;'>"._("Cancel")."</a>
     </span>
 </span>
     ";
