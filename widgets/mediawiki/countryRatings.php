@@ -2,6 +2,8 @@
 
 include "functions.inc.php";
 
+$imgpath = '/extensions/rate/img';
+
 $wgExtensionFunctions[] = "wfcountryrating";
 
 $wgExtensionCredits['parserhook'][] = array(
@@ -13,7 +15,6 @@ $wgExtensionCredits['parserhook'][] = array(
 
 function wfcountryrating() {
     global $wgParser, $wgHooks;
-    global $wgParser;
     $wgParser->disableCache();
     $wgParser->setHook("rating", "countryrating");
 
@@ -34,6 +35,7 @@ function ratingJS(&$parser, &$text) {
 }
 
 function countryrating($input, $argv) {
+    global $imgpath;
     if (!isset($argv['country']) || strlen($argv['country']) != 2) {
         return "<span tyle='border: 1px solid red;'>No country specified</span>";
     }
@@ -43,8 +45,7 @@ function countryrating($input, $argv) {
 $output = "
 <span id='rating_$country' class='rating'>
     <script>
-    function rateCountry(country, select) {
-        var value = select.options[select.options.selectedIndex].value;
+    function rateCountry(country, value) {
         if (value == 0)
             return;
         document.getElementById(\"rateselect_\"+country).style.display = 'none';
@@ -57,6 +58,7 @@ $output = "
             if (http_request.readyState == 4 && http_request.status == 200) {
                 result = JSON.parse(http_request.responseText);
                 rating = result['rating']['rating'];
+                roundRating = Math.round(rating);
                 count = result['rating']['count'];
                 document.getElementById('rating_'+country+'_value').innerHTML = rating;
                 document.getElementById('rating_'+country+'_count').innerHTML = count;
@@ -65,17 +67,19 @@ $output = "
         http_request.send(null);
     }
     </script>
-    <span id='rating_$country"."_value'>".$rating['rating']."</span>/5 (<span id='rating_$country"."_count'>".$rating['count']."</span> votes). 
-    <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>Rate!</a>
-    <span id='rateselect_$country' style='display: none;'>
-        <select name='rate_$country' onChange='rateCountry(\"$country\", this)'>
-            <option value='0'>-- Please select --</option>
-            <option value='5'>5 - Very good</option>
-            <option value='4'>4 - Good</option>
-            <option value='3'>3 - Average</option>
-            <option value='2'>2 - Bad</option>
-            <option value='1'>1 - Almost impossible</option>
-        </select>
+    <img src='$imgpath/hitch".round($rating['rating']).".png' />
+    <sup>[<a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
+    <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px;'>
+        Current rating: 
+        <span id='rating_$country"."_value' style='font-weight: bold;'>".$rating['rating']."</span>/5
+        (<span id='rating_$country"."_count'>".$rating['count']."</span> votes). <br /><br />
+        <b>Your rating:</b><br />
+        <a onclick='rateCountry(\"$country\", 5);'><img src='$imgpath/hitch5.png' />Excellent</a><br />
+        <a onclick='rateCountry(\"$country\", 4);'><img src='$imgpath/hitch4.png' />Good</a><br />
+        <a onclick='rateCountry(\"$country\", 3);'><img src='$imgpath/hitch3.png' />Average</a><br />
+        <a onclick='rateCountry(\"$country\", 2);'><img src='$imgpath/hitch2.png' />Bad</a><br />
+        <a onclick='rateCountry(\"$country\", 1);'><img src='$imgpath/hitch1.png' />Almost impossible</a><br /><br />
+        <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"none\"' style='border: 1px solid blue; background-color: #EEE; padding: 2px;'>Cancel</a>
     </span>
 </span>
     ";
