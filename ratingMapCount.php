@@ -30,7 +30,7 @@ while ($r = mysql_fetch_array($res)) {
     if ($it > 255) $it = 255;
     $col = strtoupper(dechex(255-$it));
     if (strlen($col) == 1)
-        $dechex = "0".$col;
+        $col = "0".$col;
     $c[strtolower($r['country'])] = '#'.$col.$col.'FF';
 }
 
