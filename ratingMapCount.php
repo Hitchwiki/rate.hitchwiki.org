@@ -26,9 +26,11 @@ $res = mysql_query($query);
 $c = array();
 
 while ($r = mysql_fetch_array($res)) {
-    $it = intval($r['cnt'])*16;
+    $it = intval($r['cnt'])*8;
     if ($it > 255) $it = 255;
-    $col = dechex(255-$it);
+    $col = strtoupper(dechex(255-$it));
+    if (strlen($col) == 1)
+        $dechex = "0".$col;
     $c[strtolower($r['country'])] = '#'.$col.$col.'FF';
 }
 
