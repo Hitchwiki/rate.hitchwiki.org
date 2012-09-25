@@ -2,6 +2,25 @@
 header("Content-Type: image/svg+xml");
 echo "<?xml version='1.0' encoding='UTF-8'?>";
 
+function ratingToColourGradient($rating) {
+    $it = floatval($rating);
+    $r = str_pad(dechex(235 - $it*19), 2, '0', STR_PAD_LEFT);
+    $g = str_pad(dechex(241 - $it*10), 2, '0', STR_PAD_LEFT);
+    $b = str_pad(dechex(213 - $it*33), 2, '0', STR_PAD_LEFT);
+    return '#'.$r.$g.$b;
+}
+
+function ratingToColour($rating) {
+    $r = round($rating);
+    switch ($r) {
+        case 0: $color = "#FFFFFF";
+        case 1: $color = "#FF0000";
+        case 2: $color = "#FF8D00";
+        case 3: $color = "#FFFF00";
+        case 4: $color = "#96AD00";
+        case 5: $color = "#00AD00";
+    }
+}
 
 function readConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
 	$conf = array();
@@ -26,11 +45,7 @@ $res = mysql_query($query);
 $c = array();
 
 while ($row = mysql_fetch_array($res)) {
-    $it = intval($row['avg']);
-    $r = str_pad(dechex(235 - $it*19), 2, '0', STR_PAD_LEFT);
-    $g = str_pad(dechex(241 - $it*10), 2, '0', STR_PAD_LEFT);
-    $b = str_pad(dechex(213 - $it*33), 2, '0', STR_PAD_LEFT);
-    $c[strtolower($row['country'])] = '#'.$r.$g.$b;
+    $c[strtolower($row['country'])] = ratingToColour($row['avg']);
 }
 
 
