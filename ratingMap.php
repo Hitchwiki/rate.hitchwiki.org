@@ -41,7 +41,7 @@ $dbname = 'hitchwiki_ratings';
 $crdb = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
 mysql_select_db($dbname);
 
-$query = "SELECT country, COUNT(rating) AS cnt, AVG(rating) as avg FROM ratings GROUP BY country";
+$query = "SELECT country, COUNT(rating) AS cnt, AVG(rating) as avg FROM ratings WHERE cnt > 5 GROUP BY country";
 $res = mysql_query($query);
 
 $c = array();
