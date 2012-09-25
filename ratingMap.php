@@ -19,7 +19,7 @@ function ratingToColour($rating) {
         case 3: $color = "#FFFF00"; break;
         case 4: $color = "#96AD00"; break;
         case 5: $color = "#00AD00"; break;
-        default: $color = "#FFFFFF";
+        default: $color = "($r)";
     }
     return $colour;
 }
