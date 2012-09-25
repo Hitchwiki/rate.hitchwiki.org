@@ -20,6 +20,7 @@ function ratingToColour($rating) {
         case 4: $color = "#96AD00";
         case 5: $color = "#00AD00";
     }
+    return $colour;
 }
 
 function readConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
