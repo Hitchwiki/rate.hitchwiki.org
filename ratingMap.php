@@ -13,12 +13,13 @@ function ratingToColourGradient($rating) {
 function ratingToColour($rating) {
     $r = round($rating);
     switch ($r) {
-        case 0: $color = "#FFFFFF";
-        case 1: $color = "#FF0000";
-        case 2: $color = "#FF8D00";
-        case 3: $color = "#FFFF00";
-        case 4: $color = "#96AD00";
-        case 5: $color = "#00AD00";
+        case 0: $color = "#FFFFFF"; break;
+        case 1: $color = "#FF0000"; break;
+        case 2: $color = "#FF8D00"; break;
+        case 3: $color = "#FFFF00"; break;
+        case 4: $color = "#96AD00"; break;
+        case 5: $color = "#00AD00"; break;
+        default: $color = "none($r)"
     }
     return $colour;
 }
