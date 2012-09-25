@@ -4,8 +4,9 @@
 $conf = crReadConfig('/etc/hitchwiki/hitchwiki.conf');
 $dbname = 'hitchwiki_ratings';
 
-$crdb = mysql_connect($conf['DH_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
-mysql_select_db($dbname);
+$crdb = @mysql_connect($conf['DB_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
+
+@mysql_select_db($dbname);
 
 $languages = array(
     'de' => 'de_DE',

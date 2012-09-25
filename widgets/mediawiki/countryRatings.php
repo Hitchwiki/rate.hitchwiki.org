@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 function wfcountryrating() {
     global $wgParser, $wgHooks;
-    $wgParser->disableCache();
+//    $wgParser->disableCache();
     $wgParser->setHook("rating", "countryrating");
 
     if (isset($wgHooks['ParserAfterTidy']) && is_array($wgHooks['ParserAfterTidy'])) {
@@ -35,6 +35,15 @@ function ratingJS(&$parser, &$text) {
 }
 
 function countryrating($input, $argv) {
+
+    $ratingName = array(
+        0 => 'Unknown',
+        1 => 'Almost impossible',
+        2 => 'Bad',
+        3 => 'Average',
+        4 => 'Good',
+        5 => 'Excellent',
+    );
     global $imgpath;
     if (!isset($argv['country']) || strlen($argv['country']) != 2) {
         return "<span tyle='border: 1px solid red;'>No country specified</span>";
@@ -67,9 +76,9 @@ $output = "
         http_request.send(null);
     }
     </script>
-    <img src='$imgpath/hitch".round($rating['rating']).".png' />
+    <img src='$imgpath/hitch".round($rating['rating']).".png' /> <i>("._($ratingName[$rating['rating']]).")</i>
     <sup>[<a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
-    <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px;'>
+    <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px; z-index: 999;'>
         "._("Current rating").": 
         <span id='rating_$country"."_value' style='font-weight: bold;'>".$rating['rating']."</span>/5
         (<span id='rating_$country"."_count'>".$rating['count']."</span> "._('votes')."). <br /><br />
