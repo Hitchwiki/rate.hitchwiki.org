@@ -46,7 +46,7 @@ function countryrating($input, $argv) {
     );
     global $imgpath;
     if (!isset($argv['country']) || strlen($argv['country']) != 2) {
-        return "<span tyle='border: 1px solid red;'>No country specified</span>";
+        return "<span tyle='border: 1px solid red;'>No valid country specified</span>";
     }
     $country = strtoupper(mysql_real_escape_string($argv['country']));
     $rating = getRating($country);
@@ -76,7 +76,7 @@ $output = "
         http_request.send(null);
     }
     </script>
-    <img src='$imgpath/hitch".round($rating['rating']).".png' /> <i>("._($ratingName[$rating['rating']]).")</i>
+    <img src='$imgpath/hitch".round($rating['rating']).".png' /> <i>("._($ratingName[round($rating['rating']])).")</i>
     <sup>[<a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
     <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px; z-index: 999;'>
         "._("Current rating").": 
