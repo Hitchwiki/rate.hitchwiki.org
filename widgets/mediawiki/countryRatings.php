@@ -54,10 +54,10 @@ function countryrating($input, $argv) {
 $output = "
 <span id='rating_$country' class='rating'>
     <script>
-    function rateCountry(country, value) {
+    function hwr_rateCountry(country, value) {
         if (value == 0)
             return;
-        document.getElementById(\"rateselect_\"+country).style.display = 'none';
+        document.getElementById(\"hwr_rateselect_\"+country).style.display = 'none';
         var result = {}; 
         var rating;
         var count;
@@ -65,30 +65,76 @@ $output = "
         http_request.open('GET', '/rate/rate.php?country='+country+'&rating='+value, true);
         http_request.onreadystatechange = function () {
             if (http_request.readyState == 4 && http_request.status == 200) {
+            	//console.log('->hwr_rateCountry: http_request.onreadystatechange');
                 result = JSON.parse(http_request.responseText);
                 rating = result['rating']['rating'];
                 roundRating = Math.round(rating);
                 count = result['rating']['count'];
-                document.getElementById('rating_'+country+'_value').innerHTML = rating;
-                document.getElementById('rating_'+country+'_count').innerHTML = count;
+                document.getElementById('hwr_rating_'+country+'_value').innerHTML = rating;
+                document.getElementById('hwr_rating_'+country+'_count').innerHTML = count;
             }
         };
         http_request.send(null);
     }
     </script>
+    <style>
+    .hwr_ratepopup {
+    	display: none; 
+    	position: absolute; 
+    	padding: 5px; 
+    	z-index: 999;
+    	border: 1px solid #ccc;
+	
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;;
+		border-radius: 5px;
+		
+		background-color: #fff;
+		
+		
+		-moz-box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
+		-webkit-box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
+		box-shadow: 1px 3px 5px rgba(0,0,0,0.2);
+    }
+    .hwr_rateOptions a {
+    	text-align: left;
+    }
+    .hwr_current_rating {
+    	font-size: 13px;
+    	line-height: 13px;
+    	clear: both;
+    	padding: 0 0 5px 0;
+    }
+    .hwr_votes {
+    	font-size: 11px;
+    	line-height: 11px;
+    	color: #ccc;
+    }
+    .hwr_rate {
+    	font-weight: bold;
+    }
+    </style>
     <img src='$imgpath/hitch".round($rating['rating']).".png' /> <i>("._($ratingName[round($rating['rating'])]).")</i>
-    <sup>[<a onclick='document.getElementById(\"rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
-    <span id='rateselect_$country' style='display: none; position: absolute; border: 1px solid blue; background-color: white; padding: 5px; z-index: 999;'>
-        "._("Current rating").": 
-        <span id='rating_$country"."_value' style='font-weight: bold;'>".$rating['rating']."</span>/5
-        (<span id='rating_$country"."_count'>".$rating['count']."</span> "._('votes')."). <br /><br />
+    <sup>[<a onclick='document.getElementById(\"hwr_rateselect_$country\").style.display = \"block\"'>"._("Rate!")."</a>]</sup>
+    <span id='hwr_rateselect_$country' class='hwr_ratepopup'>
+        <div class='hwr_current_rating'>
+        	"._("Current rating").": 
+        	<span class='hwr_rate'>
+        		<span id='hwr_rating_$country"."_value'>".$rating['rating']."</span>/5
+        	</span>
+        	<span class='hwr_votes'>(<span id='hwr_rating_$country"."_count'>".$rating['count']."</span> "._('votes').")</span>
+        </div>
+        
         <b>"._("Your rating").":</b><br />
-        <a onclick='rateCountry(\"$country\", 5);'><img src='$imgpath/hitch5.png' />"._("Excellent")."</a><br />
-        <a onclick='rateCountry(\"$country\", 4);'><img src='$imgpath/hitch4.png' />"._("Good")."</a><br />
-        <a onclick='rateCountry(\"$country\", 3);'><img src='$imgpath/hitch3.png' />"._("Average")."</a><br />
-        <a onclick='rateCountry(\"$country\", 2);'><img src='$imgpath/hitch2.png' />"._("Bad")."</a><br />
-        <a onclick='rateCountry(\"$country\", 1);'><img src='$imgpath/hitch1.png' />"._("Almost impossible")."</a><br /><br />
-        <a onclick='document.getElementById(\"rateselect_$country\").style.display = \"none\"' style='border: 1px solid blue; background-color: #EEE; padding: 2px;'>"._("Cancel")."</a>
+        <div class='btn-group btn-group-vertical hwr_rateOptions'>
+        	<a class='btn btn-mini' onclick='hwr_rateCountry(\"$country\", 5);'><img src='$imgpath/hitch5.png' /> "._("Excellent")."</a>
+        	<a class='btn btn-mini' onclick='hwr_rateCountry(\"$country\", 4);'><img src='$imgpath/hitch4.png' /> "._("Good")."</a>
+        	<a class='btn btn-mini' onclick='hwr_rateCountry(\"$country\", 3);'><img src='$imgpath/hitch3.png' /> "._("Average")."</a>
+        	<a class='btn btn-mini' onclick='hwr_rateCountry(\"$country\", 2);'><img src='$imgpath/hitch2.png' /> "._("Bad")."</a>
+        	<a class='btn btn-mini' onclick='hwr_rateCountry(\"$country\", 1);'><img src='$imgpath/hitch1.png' /> "._("Almost impossible")."</a>
+        </div>
+        <br /><br />
+        <a onclick='document.getElementById(\"hwr_rateselect_$country\").style.display = \"none\"' class='btn btn-mini'><i class='icon-ban-circle'></i> "._("Cancel")."</a>
     </span>
 </span>
     ";
