@@ -2,27 +2,8 @@
 header("Content-Type: image/svg+xml");
 echo "<?xml version='1.0' encoding='UTF-8'?>";
 
-function ratingToColourGradient($rating) {
-    $it = floatval($rating);
-    $r = str_pad(dechex(235 - $it*19), 2, '0', STR_PAD_LEFT);
-    $g = str_pad(dechex(241 - $it*10), 2, '0', STR_PAD_LEFT);
-    $b = str_pad(dechex(213 - $it*33), 2, '0', STR_PAD_LEFT);
-    return '#'.$r.$g.$b;
-}
 
-function ratingToColour($rating) {
-    $r = round($rating);
-    switch ($r) {
-        case 0: $colour = "#FFFFFF"; break;
-        case 1: $colour = "#FF0000"; break;
-        case 2: $colour = "#FF8D00"; break;
-        case 3: $colour = "#FFFF00"; break;
-        case 4: $colour = "#96AD00"; break;
-        case 5: $colour = "#00AD00"; break;
-        default: $colour = "($r)";
-    }
-    return $colour;
-}
+$colours = array('FF0000', 'FF1100', 'FF2200', 'FF3300', 'FF4400', 'FF5500', 'FF6600', 'FF7700', 'FF8800', 'FF9900', 'FFAA00', 'FFBB00', 'FFCC00', 'FFDD00', 'FFEE00', 'FFFF00', 'EEFF00', 'DDFF00', 'CCFF00', 'BBFF00', 'AAFF00', '99FF00', '88FF00', '77FF00', '66FF00', '55FF00', '44FF00', '33FF00', '22FF00', '11FF00', '00FF00');
 
 function readConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
 	$conf = array();
@@ -47,8 +28,17 @@ $res = mysql_query($query);
 $c = array();
 
 while ($row = mysql_fetch_array($res)) {
-    if ($row['cnt'] >= 5)
-        $c[strtolower($row['country'])] = ratingToColour($row['avg']);
+    $it = ($row['avg'])-1;
+	$colour = $colours[round($it*(30/5))];
+	$strcolour = preg_replace('!^(..)(..)(..)$!', "$1:$2:$3", $colour);
+	list($rh, $gh, $bh) = explode(':', $strcolour); 
+
+    $r = hexdec($rh); 
+    $g = hexdec($gh); 
+    $b = hexdec($bh); 
+	$opacity = min(1, $row['cnt']/30);
+
+	$c[strtolower($row['country'])] = "rgba($r, $g, $b, $opacity); /* $rh - $gh - $bh */;";
 }
 
 
