@@ -38,7 +38,7 @@ while ($row = mysql_fetch_array($res)) {
     $b = hexdec($bh); 
 	$opacity = round(min(1, $row['cnt']/30), 2);
 
-	$c[strtolower($row['country'])] = "rgba($r, $g, $b, $opacity);";
+	$c[strtolower($row['country'])] = "rgba($r, $g, $b, $opacity)";
 }
 
 
