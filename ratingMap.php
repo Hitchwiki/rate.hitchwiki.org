@@ -30,15 +30,9 @@ $c = array();
 while ($row = mysql_fetch_array($res)) {
     $it = ($row['avg'])-1;
 	$colour = $colours[round($it*(30/5))];
-	$strcolour = preg_replace('!^(..)(..)(..)$!', "$1:$2:$3", $colour);
-	list($rh, $gh, $bh) = explode(':', $strcolour); 
-
-    $r = hexdec($rh); 
-    $g = hexdec($gh); 
-    $b = hexdec($bh); 
 	$opacity = round(min(1, $row['cnt']/20), 2);
 
-	$c[strtolower($row['country'])] = "rgba($r, $g, $b, $opacity)";
+	$c[strtolower($row['country'])] = "fill: #$colour; fill-opacity: $opacity; ";
 }
 
 
@@ -136,35 +130,11 @@ while ($row = mysql_fetch_array($res)) {
 }
 <?php
 
-foreach ($c AS $country => $color) {
-    echo ".$country { fill: $color; } \n";
+foreach ($c AS $country => $style) {
+    echo ".$country { $style } \n";
 }
 
 ?>
-/*
- * Additional style rules
- *
- * The following are examples of colouring countries.  You can substitute these with your own styles to colour the countries on the map.
- *
- * Color a few countries:
- *
- * .uk, .au, .nc
- * {
- *    fill:       #ff0000;
- * }
- *
- * Color a few small country circles (and the countries):
- *
- * .ms, .ky
- * {
- *    opacity:    1;
- *    fill:       #ff0000;
- * }
- *
- */
-/*
- * Antarctica
- */
 
 .aq
 {
@@ -175,8 +145,7 @@ foreach ($c AS $country => $color) {
  * Sea
  */
 
-.ocean
-{
+.ocean {
    opacity: 1;
    color: #000000;
    fill:white;
