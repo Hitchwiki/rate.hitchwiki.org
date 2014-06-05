@@ -1,12 +1,10 @@
-<?php 
-
+<?php
 
 $conf = crReadConfig('/etc/hitchwiki/hitchwiki.conf');
-$dbname = 'hitchwiki_ratings';
 
-$crdb = @mysql_connect($conf['DB_HOST'], $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
-
-@mysql_select_db($dbname);
+$dblink = new PDO("mysql:host=".$conf['DB_HOST'].";dbname=hitchwiki_rate;charset=utf8", $conf['DB_USERNAME'], $conf['DB_PASSWORD']);
+$dblink->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+$dblink->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
 $languages = array(
     'de' => 'de_DE',
@@ -29,24 +27,26 @@ function crReadConfig($path = '/etc/hitchwiki/hitchwiki.conf') {
 
 /* Try to get Username from mediawiki */
 function getCurrentUser() {
-    if ($_SERVER['SERVER_NAME'] == 'hitchwiki.org' && isset($_COOKIE['pg_hitchwiki_enUserName']))
-        return mysql_real_escape_string($_COOKIE['pg_hitchwiki_enUserName']);
-    return '';
+    return ($_SERVER['SERVER_NAME'] == 'hitchwiki.org' && isset($_COOKIE['hitchwiki_enUserName'])) ? $_COOKIE['hitchwiki_enUserName'] : '';
 }
 
 function getRating($country) {
-    global $crdb;
-    $query = "SELECT AVG(rating),COUNT(rating) FROM ratings WHERE country='$country' GROUP BY country";
-    $r = mysql_fetch_row(mysql_query($query, $crdb));
-    return array('rating' => round($r[0], 1), 'count' => intval($r[1]));
+    global $dblink;
+
+    $sql = $dblink->prepare("SELECT AVG(rating) AS rating, COUNT(rating) AS count FROM ratings WHERE country=? GROUP BY country");
+    $sql->execute(array($country));
+    $results = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+    return array('rating' => round($results[0]['rating'], 1), 'count' => intval($results[0]['count']));
 }
 
 function getCountryName($country, $lang) {
-    global $crdb;
-    $query = "SELECT $lang FROM geo_countries WHERE iso = '$country'";
-    $r = mysql_fetch_row(mysql_query($query, $crdb));
-    return $r[0];
+    global $dblink;
 
+    $sql = $dblink->prepare("SELECT :lang as lang FROM `geo_countries` WHERE `iso` = :country LIMIT 1");
+    $sql->bindValue(':country', $country);
+    $sql->bindValue(':lang', $lang);
+    $sql->execute();
+    $results = $sql->fetchAll(PDO::FETCH_ASSOC);
+    return $results[0]['lang'];
 }
-
-?>

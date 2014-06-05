@@ -1,43 +1,63 @@
 <?php
+/**
+ * Hitchwiki Rate
+ *
+ * Insert new rate to DB
+ */
 
 include "functions.inc.php";
 
-
-if (isset($_GET['country']) && strlen(trim($_GET['country'])) === 2)
-    $country = mysql_real_escape_string(trim(strtoupper($_GET['country'])));
-else
+// Validate country
+if (isset($_GET['country']) && strlen(trim($_GET['country'])) === 2) {
+    $country = trim(strtoupper($_GET['country']));
+}
+else {
     die(json_encode(array('error' => "Invalid country")));
+}
 
-if (isset($_GET['rating']) && intval($_GET['rating']) > 0 && intval($_GET['rating']) <= 5)
+// Validate rating
+if (isset($_GET['rating']) && is_numeric($_GET['rating']) && intval($_GET['rating']) > 0 && intval($_GET['rating']) <= 5) {
     $rating = intval($_GET['rating']);
-else
+}
+else {
     die(json_encode(array('error' => "Invalid rating")));
+}
 
+
+// Check if database has entry with that user OR IP (max 7 days fresh)
 $user = getCurrentUser();
 $ip = $_SERVER['REMOTE_ADDR'];
 
-if ($user)
-    $query = "SELECT id FROM ratings WHERE user='$user' AND country='$country'";
-else
-    $query = "SELECT id FROM ratings WHERE ip='$ip' AND user IS NULL AND country='$country' AND timestamp > DATE_SUB(CURDATE(), INTERVAL 7 DAY)"; 
-
-$res = mysql_query($query);
-if (mysql_num_rows($res) > 0) {
-    while($row = mysql_fetch_row($res)) {
-        mysql_query("DELETE FROM ratings WHERE id='$row[0]'");
-    }
+if ($user) {
+    $sql = $dblink->prepare("SELECT id FROM ratings WHERE user=:user AND country=:country");
+    $sql->execute(array(':user' => $user, ':country' => $country));
+}
+else {
+    $sql = $dblink->prepare("SELECT id FROM ratings WHERE ip=:ip AND user IS NULL AND country=:country AND timestamp > DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+    $sql->execute(array(':ip' => $ip, ':country' => $country));
 }
 
-if (empty($user))
-    $query = "INSERT INTO ratings (country, user, ip, rating) VALUES ('$country', NULL, '$ip', $rating);";
-else
-    $query = "INSERT INTO ratings (country, user, ip, rating) VALUES ('$country', '$user', '$ip', $rating);";
+// There indeed was already record, remove old one
+if ($sql->rowCount() > 0) {
+    $old_id = $sql->fetchAll(PDO::FETCH_ASSOC);
+    $remove_old = $dblink->prepare("DELETE FROM ratings WHERE id=:id");
+    $remove_old->bindValue(':id', $old_id[0]['id'], PDO::PARAM_STR);
+    $remove_old->execute();
+}
 
-mysql_query($query);
+// Insert new one
+if(empty($user)) {
+    $new_rate = $dblink->prepare("INSERT INTO ratings (country, user, ip, rating) VALUES (:country, null, :ip, :rating)");
+    $new_rate->execute(array(':country' => $country, ':ip' => $ip, ':rating' => $rating));
+}
+else {
+    $new_rate = $dblink->prepare("INSERT INTO ratings (country, user, ip, rating) VALUES (:country, :user, :ip, :rating)");
+    $new_rate->execute(array(':country' => $country, ':user' => $user, ':ip' => $ip, ':rating' => $rating));
+}
 
+
+// Return fresh hitchability after new rating
 echo json_encode(array(
-    'country' => $country, 
+    'country' => $country,
     'rating' => getRating($country),
 ));
-
-?>
